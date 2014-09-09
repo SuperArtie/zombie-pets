@@ -1,10 +1,10 @@
 doctype html
-html(ng-app='mean-template', lang='en')
+html(ng-app='zombie-pets', lang='en')
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    title MEAN Template
+    title Zombie petZ
     link(href='/vendor/bootstrap/dist/css/bootstrap.css', rel='stylesheet')
     link(href='/vendor/fontawesome/css/font-awesome.css', rel='stylesheet')
     link(href='/index.css', rel='stylesheet')
@@ -13,9 +13,77 @@ html(ng-app='mean-template', lang='en')
       .row
         .col-xs-12
           h1 {{title}}
-          h2
-            span Web Development for &nbsp;
-            em: u {{occupation}}
+      .row
+        .col-xs-12
+          #cage(ng-show='player1 && player2')
+            .player#player1
+              img.photo(src='{{player1.photo}}')
+              .name " {{player1.name}} "
+              .damage Health: {{player1.health}}
+              .petWeapon Weapon: {{player1.weapon.name}}
+              .bar
+                .fill(style='width: {{player1.health}}%; background-color: green;')
+            .player
+              button.btn.btn-danger(ng-click='fight()') Fight!
+            .player#player2
+              img.photo(src='{{player2.photo}}')
+              .name " {{player2.name}} "
+              .damage Health: {{player2.health}}
+              .petWeapon Weapon: {{player2.weapon.name}}
+              .bar
+                .fill(style='width: {{player2.health}}%; background-color: green;')
+      .row
+        .col-xs-3
+          button.btn.btn-success(ng-click='toggleWeapon()') Show/Hide
+          h4 Create Weapon
+          form(role='form', novalidate, ng-hide='hideWeapon', name='weaponForm')
+            .form-group
+              label(for='name') Name
+              input.form-control#name(ng-minlength='3', ng-maxlength='10', required, ng-model='weapon.name', type='text', name='name', autofocus)
+            .form-group
+              label(for='photo') Photo
+              input.form-control#photo(ng-pattern='/^http/', required, ng-model='weapon.photo', type='text', name='photo')
+            .form-group
+              label(for='damage') Damage
+              input.form-control#damage(required, ng-model='weapon.damage', type='number', name='damage')
+            button.btn.btn-primary(ng-click='addWeapon()', type='submit', ng-show='weaponForm.$valid') Add Weapon
+          .weapon(ng-repeat='w in weapons')
+            img.photo(src='{{w.photo}}')
+            .name " {{w.name}} "
+            .damage Damage: {{w.damage}}
+        .col-xs-3
+          button.btn.btn-success(ng-click='togglePet()') Show/Hide
+          h4 Create Pet
+          form(role='form', novalidate, ng-hide='hidePet', name='petForm')
+            .form-group
+              label(for='name') Name
+              input.form-control#petName(ng-minlength='3', ng-maxlength='10', required, ng-model='pet.name', type='text', name='name', autofocus)
+            .form-group
+              label(for='photo') Photo
+              input.form-control#petPhoto(ng-pattern='/^http/', required, ng-model='pet.photo', type='text', name='photo')
+            .form-group
+              label Health
+              input.form-control(type='number', readonly, ng-model='pet.health')
+            .form-group
+              label(for='weapon') Weapon
+              select(name='weapon', ng-model='pet.weapon')
+                option(ng-repeat='w in weapons', value='{{$index}}') {{w.name}}
+            button.btn.btn-primary(ng-click='addPet()', type='submit', ng-show='petForm.$valid') Add Pet
+          .pet(ng-repeat='p in pets')
+            img.photo(src='{{p.photo}}')
+            .name " {{p.name}} "
+            .damage Health: {{p.health}}
+            .petWeapon Weapon: {{p.weapon.name}}
+            button.btn.btn-danger(ng-click='setPlayer(1)') 1
+            button.btn.btn-danger(ng-click='setPlayer(2)') 2
+      .row
+        .col-xs-3
+          pre {{weapon | json}}
+          pre {{weapons | json}}
+          pre {{pet | json}}
+          pre {{pets | json}}
+          pre {{player1 | json}}
+          pre {{player2 | json}}
 
     script(src='/vendor/angular/angular.js')
     script(src='/vendor/jquery/dist/jquery.js')
